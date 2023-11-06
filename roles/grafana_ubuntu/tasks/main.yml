@@ -1,0 +1,22 @@
+- name: Adding Grafana Repo
+  shell: |
+    sudo wget -q -O /usr/share/keyrings/grafana.key https://packages.grafana.com/gpg.key
+
+- name: Update repo
+  shell: |
+    sudo apt-get update
+
+- name: Updating the repo and isntalling grafana
+  apt:
+    name:
+      - grafana
+
+- name: Reloading the daemon
+  shell: |
+    sudo systemctl daemon-reload
+
+- name: Making sure that the Grafana server is started and enabled
+  service:
+    name: grafana-server
+    state: restarted
+    enabled: true

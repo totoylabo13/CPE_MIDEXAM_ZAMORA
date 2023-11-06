@@ -1,0 +1,26 @@
+- name: Installing dependencies 
+  apt:
+    name:  
+      - apt-transport-https
+      - software-properties-common 
+      - wget
+    state: latest
+
+- name: Adding Influxdb in the repository
+  shell: |
+    wget -q https://repos.influxdata.com/influxdb.key
+    sleep 5
+    echo '23a1c8836f0afc5ed24e0486339d7cc8f6790b83886c4c96995b88a061c5bb5d influxdb.key' | sha256sum -c && cat influxdb.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdb.gpg > /dev/null
+    sleep 5
+    echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+
+- name: Installing Influxdb
+  apt:
+    name:
+      - influxdb
+
+- name: Making sure that the Influxd is enabled and started
+  service:
+    name: influxdb
+    state: started
+    enabled: true

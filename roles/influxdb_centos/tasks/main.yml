@@ -1,0 +1,29 @@
+- name: Copying the Influxdb repository file
+  unarchive:
+    src: https://dl.influxdata.com/influxdb/releases/influxdb2-2.4.0-linux-amd64.tar.gz 
+    dest: /tmp/
+    remote_src: yes
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Adding the executables to the PATH
+  shell: 
+    cd /tmp/influxdb2*
+    sudo cp influxdb2-2.4.0-linux-amd64/influxd /usr/local/bin/
+
+- name: Update yum package cache
+  yum:
+    name: "*"
+    state: latest
+
+- name: Install InfluxDB
+  yum:
+    name: influxdb
+    state: present
+
+- name: Start and enable InfluxDB service
+  systemd:
+    name: influxdb
+    state: started
+    enabled: yes
